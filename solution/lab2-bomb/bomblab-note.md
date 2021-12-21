@@ -20,10 +20,11 @@ Bomb Lab
 	0x400ef2 <phase_1+18>   callq  0x40143a <explode_bomb>                   
 	0x400ef7 <phase_1+23>   add    $0x8,%rsp                                 
 	0x400efb <phase_1+27>   retq   
-	```
+```
 第一个炸弹函数比较简单，其功能是将地址0x402400处存放的字符串与输入字符串进行比较，如果不相同就会触发 `explode_bomb` 炸弹函数。通过 `x /1s 0x402400` 可以得到所应输入的字符串，如下所示：  
-
-`0x402400:   "Border relations with Canada have never been better."`  
+```
+0x402400:   "Border relations with Canada have never been better."
+```
 ## phase_2
 相比第一个函数，第二个函数的汇编代码长度增加了一些，在这里将其拆分为几个部分进行介绍，在下文也将继承这种格式：
 ### Part1:
@@ -49,12 +50,12 @@ Bomb Lab
 	0x40148f <read_six_numbers+51>  cmp    $0x5,%eax                                                                                                                                                     
 	0x401492 <read_six_numbers+54>  jg     0x401499 <read_six_numbers+61>                                                                                                                                
     0x401494 <read_six_numbers+56>  callq  0x40143a <explode_bomb>
-    ```
+```
 函数的功能为将以主函数中输入的字符串以 `\0` 为分隔符分为6个4字节长度整形值，并存放在调用该函数时的 `%rsp` 寄存器存放的地址处。当以`"1 2 3 4 5 6"`作为主函数中的输入时，在从该函数返回phase_1后，输入 `x /6dw $rsp` 查看调用该函数后栈帧中的数据，可以得到以下输出：  
 ```
 	0x7fffffffdf70: 1       2       3       4
 	0x7fffffffdf80: 5       6
-	```
+```
 ### part2:
 ```
 	0x400f0e <phase_2+18>   je     0x400f30 <phase_2+52>
