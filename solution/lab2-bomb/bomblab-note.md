@@ -135,7 +135,7 @@ for(int i=0;i<5;i++){
 0x400fb9 <phase_3+118>  mov    $0x137,%eax                                                                                                                                                            
 0x400fbe <phase_3+123>  cmp    0xc(%rsp),%eax                                                                                                                                                         
 0x400fc2 <phase_3+127>  je     0x400fc9 <phase_3+134>                                                                                                                                                
-	0x400fc4 <phase_3+129>  callq  0x40143a <explode_bomb> 
+0x400fc4 <phase_3+129>  callq  0x40143a <explode_bomb> 
 ```
 很明显这是一个 `switch` 语句的基本格式，且 `$rsp+8` 中的值为输入至 `switch` 中的参数，`switch` 语句为局部变量赋值并与 `$rsp+12` 处的值比较，如相同则通过函数。通过 `x /8xg 0x402470` 查看跳转表的跳转地址：  
 ```
@@ -174,11 +174,11 @@ for(int i=0;i<5;i++){
 void phase_4(char* input){
     int num[2];
     int len = 0;
-	_iso99_sscanf(input,&len,num); 
-	if(len != 2) explode_bomb();
-	if(num[0] > 14) explode_bomb();
-	int x = 14,y = 0,z = num[0];
-	if(func4(x,y,z) != 0 || num[1] != 0) explode_bomb();
+   _iso99_sscanf(input,&len,num); 
+    if(len != 2) explode_bomb();
+    if(num[0] > 14) explode_bomb();
+    int x = 14,y = 0,z = num[0];
+    if(func4(x,y,z) != 0 || num[1] != 0) explode_bomb();
 }
 ```  
 本问题的关键之处就是在于 `func4` 函数的解读，它是一个递归函数，代码如下：  
@@ -208,18 +208,18 @@ void phase_4(char* input){
 
 ```	
 int func4(int x,int y,int z){
-	int ret = x - y;
-	ret = ret + (ret>>31);
-	ret >>= 1;
-	int c = ret + y;
-	if( c > z ){
-		x = c - 1;
-		ret = func4(x,y,z);
-		ret = ret + ret;
-		return ret;
-	}
-	ret = 0;
-	return c <= z ? a : 2*a + 1;
+    int ret = x - y;
+    ret = ret + (ret>>31);
+    ret >>= 1;
+    int c = ret + y;
+    if( c > z ){
+	x = c - 1;
+	ret = func4(x,y,z);
+	ret = ret + ret;
+	return ret;
+    }
+    ret = 0;
+    return c <= z ? a : 2*a + 1;
 }
 ```
 当输入为`x = 14,y = 0,z = num[0]` 时，对该函数进行跟踪，可以发现后两个参数在递归过程中保持不变，而参数x在递归过程中的值变化情况为 `14->6->2->1`。可以发现，除了最深层的递归函数以外，`func4` 在其子函数返回时将其子函数的返回值乘2以返回其父函数，为了满足 `phase_4` 中返回值为0的条件，最深层的递归函数应当以0作为返回值。   
@@ -320,12 +320,12 @@ int func4(int x,int y,int z){
 int num[6];
 read_six_numbers(input,num);
 for(int i=0;i<6;++i){
-	if(num[i] > 5) explode_bomb();
-	int j = i+1;
-	while(j < 6){
-		if(num[j] == num[i]) explode_bomb();
-		++j;
-	}
+    if(num[i] > 5) explode_bomb();
+    int j = i+1;
+    while(j < 6){
+	if(num[j] == num[i]) explode_bomb();
+	++j;
+    }
 }
 ```
 ### part2:
@@ -379,10 +379,10 @@ for(int i=0;i<6;i++)
 ``` 
 int* addrs[6];	
 for(int i=0;i<6;i++){
-	int c = num[i];
-	int addr = 0x6032d0;
-	if(c > 1) addr += (c-1)*16;
-	addrs[i] = addr;
+    int c = num[i];
+    int addr = 0x6032d0;
+    if(c > 1) addr += (c-1)*16;
+    addrs[i] = addr;
 }
 ```
 可以看出，该部分将 `$rsp` 处存放的6个整数作为偏移量，在栈帧处存放了6个指针数据。
@@ -404,7 +404,7 @@ for(int i=0;i<6;i++){
 该部分将上部分代码中存放的指针数组中前5个指针地址加8处存放数组中的下一个指针值，可以转化为下面的C语句方便理解：
 ```  
 for(int i=0;i<5;i++){
-	*(addrs[i]+8) = addrs[i+1];
+    *(addrs[i]+8) = addrs[i+1];
 ```
 当函数的输入参数为`"4 3 2 1 6 5"`时，在执行完该部分语句后再次输入 `x /12xg 0x6032d0` 以及查看该处存放内容的变化情况：  
 ```
@@ -439,8 +439,8 @@ for(int i=0;i<5;i++){
 将其转化为等价的C语句：  
 ```
 for(int i=0;i<5;i++){
-	if(*(addrs[i]) <= *(addrs[i]+8))
-		explode_bomb();
+    if(*(addrs[i]) <= *(addrs[i]+8))
+	explode_bomb();
 }
 ```
 结合part4中的内容，每个 `addrs[i]+8` 中存放的地址即为 `addrs[i+1]`，因此，为了不触发炸弹函数，指针数组中存放的相邻两个地址之间的值应当满足**前一个地址处的值大于后一个地址处的值**。  
