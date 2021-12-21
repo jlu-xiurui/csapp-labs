@@ -35,8 +35,8 @@ Bomb Lab
 ```
 该部分主要的工作就是调用 `<read_six_numbers>` 在栈帧中输入数据，其中`<read_six_number>`的代码如下：
 ```
-    0x40145c <read_six_numbers>     sub    $0x18,%rsp
-    0x401460 <read_six_numbers+4>   mov    %rsi,%rdx                                                                        
+   	0x40145c <read_six_numbers>     sub    $0x18,%rsp
+   	0x401460 <read_six_numbers+4>   mov    %rsi,%rdx                                                                        
 	0x401463 <read_six_numbers+7>   lea    0x4(%rsi),%rcx                                                                                 
 	0x401467 <read_six_numbers+11>  lea    0x14(%rsi),%rax                                                                                                                                               
 	0x40146b <read_six_numbers+15>  mov    %rax,0x8(%rsp)                                                                                                                                                
@@ -49,7 +49,7 @@ Bomb Lab
 	0x40148a <read_six_numbers+46>  callq  0x400bf0 <__isoc99_sscanf@plt>                                                                                                                                
 	0x40148f <read_six_numbers+51>  cmp    $0x5,%eax                                                                                                                                                     
 	0x401492 <read_six_numbers+54>  jg     0x401499 <read_six_numbers+61>                                                                                                                                
-    0x401494 <read_six_numbers+56>  callq  0x40143a <explode_bomb>
+    	0x401494 <read_six_numbers+56>  callq  0x40143a <explode_bomb>
 ```
 函数的功能为将以主函数中输入的字符串以 `\0` 为分隔符分为6个4字节长度整形值，并存放在调用该函数时的 `%rsp` 寄存器存放的地址处。当以`"1 2 3 4 5 6"`作为主函数中的输入时，在从该函数返回phase_1后，输入 `x /6dw $rsp` 查看调用该函数后栈帧中的数据，可以得到以下输出：  
 ```
@@ -82,12 +82,12 @@ Bomb Lab
 
 如果其中一个判断为假则触发 `explode_bomb` ，可以将上述语句转换为类似的C语句来帮助理解（这一方法对于下面的困难问题的解决会有一定的帮助）：  
 ``
-    int num[6];
-	read_six_numbers(input,num);
-	if(num[0] != 1) explode_bomb();
-	for(int i=0;i<5;i++){
-		if(num[i+1] != num[i]*2)
-			explode_bomb();
+    	int num[6];
+		read_six_numbers(input,num);
+		if(num[0] != 1) explode_bomb();
+		for(int i=0;i<5;i++){
+			if(num[i+1] != num[i]*2)
+				explode_bomb();
 ```
 因此，`"1 2 4 8 16 31"` 即为本问题的答案。
 ## phase_3
