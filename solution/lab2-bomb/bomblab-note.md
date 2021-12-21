@@ -166,8 +166,10 @@ for(int i=0;i<5;i++){
 0x401051 <phase_4+69>   cmpl   $0x0,0xc(%rsp)                                                                                                                                                         
 0x401056 <phase_4+74>   je     0x40105d <phase_4+81>                                                                                                                                                  
 0x401058 <phase_4+76>   callq  0x40143a <explode_bomb> 
-```
-该函数的主体部分比较简单，先是读入两个数，将其中的一个数传入 `func4` ，另一个判断其是否等于零，可以转换为下列等价C语句： 
+```  
+
+该函数的主体部分比较简单，先是读入两个数，将其中的一个数传入 `func4` ，另一个判断其是否等于零，可以转换为下列等价C语句：  
+
 ```
 void phase_4(char* input){
 	int num[2];
@@ -177,9 +179,10 @@ void phase_4(char* input){
 	if(num[0] > 14) explode_bomb();
 	int x = 14,y = 0,z = num[0];
 	if(func4(x,y,z) != 0 || num[1] != 0) explode_bomb();
-	}
-```
+}
+```  
 本问题的关键之处就是在于 `func4` 函数的解读，它是一个递归函数，代码如下：  
+
 ```
 0x400fd2 <func4+4>      mov    %edx,%eax                                                                                                                                                              
 0x400fd4 <func4+6>      sub    %esi,%eax                                                                                                                                                              
@@ -202,6 +205,7 @@ void phase_4(char* input){
 0x401003 <func4+53>     lea    0x1(%rax,%rax,1),%eax
 ```
 对递归函数的汇编代码进行阅读比较困难，在这里将其转化为等价的C语句以方便理解：  
+
 ```	
 int func4(int x,int y,int z){
 	int ret = x - y;
@@ -222,7 +226,8 @@ int func4(int x,int y,int z){
 当 `num[0]` 等于7、3、1时，最深层的递归函数结束时会使得 `c <= z` 条件成立，以返回0值，使得 `func4` 最终以0值返回 `phase_4`，因此本问题的答案可以是 `"7 0"`、 `"3 0"`、`"1 0"`中的任意一个。
 ## phase_5
 本问题中存在两部分比较特殊的部分，其功能是检查函数调用过程中是否发生了栈帧破坏，对于函数的主体功能影响不大：  
-``
+
+```
 0x40106a <phase_5+8>    mov    %fs:0x28,%rax                                                                                                                                                          
 0x401073 <phase_5+17>   mov    %rax,0x18(%rsp)
 ...
@@ -257,7 +262,8 @@ int func4(int x,int y,int z){
 0x4010ac <phase_5+74>   jne    0x40108b <phase_5+41>
 ```
 为了方便阅读，在这里对语句的顺序进行了调整，可以看出这是一个循环语句，在循环中将 `input` 指向的字符串拷贝至 `$rsp` 处，并将字符串中各字符与 `0xf` 做and运算，将运算结果作为地址偏移量，并将 `0x4024b0` 加该偏移量处的字符逐个拷贝至 `$rsp+16` 处。  
-利用 `x /1s 0x4024b0` 可以查看存放在该地址处的字符串： 
+利用 `x /1s 0x4024b0` 可以查看存放在该地址处的字符串：  
+
 ```
 0x4024b0 <array.3449>:  "maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?"
 ```
