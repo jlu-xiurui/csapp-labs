@@ -27,13 +27,15 @@ Bomb Lab
 ```
 ## phase_2
 相比第一个函数，第二个函数的汇编代码长度增加了一些，在这里将其拆分为几个部分进行介绍，在下文也将继承这种格式：
-### Part1:
+### Part1:  
+
 ```
 0x400efe <phase_2+2>    sub    $0x28,%rsp
 0x400f02 <phase_2+6>    mov    %rsp,%rsi 
-0x400f05 <phase_2+9>    callq  0x40145c <read_six_numbers>   
+0x400f05 <phase_2+9>    callq  0x40145c <read_six_numbers>  
 ```
-该部分主要的工作就是调用 `<read_six_numbers>` 在栈帧中输入数据，其中`<read_six_number>`的代码如下：
+该部分主要的工作就是调用 `<read_six_numbers>` 在栈帧中输入数据，其中`<read_six_number>`的代码如下：  
+
 ```
 0x40145c <read_six_numbers>     sub    $0x18,%rsp
 0x401460 <read_six_numbers+4>   mov    %rsi,%rdx                                                                        
@@ -50,13 +52,15 @@ Bomb Lab
 0x40148f <read_six_numbers+51>  cmp    $0x5,%eax                                                                                                                                                     
 0x401492 <read_six_numbers+54>  jg     0x401499 <read_six_numbers+61>                                                                                                                                
 0x401494 <read_six_numbers+56>  callq  0x40143a <explode_bomb>
-```
+```  
+
 函数的功能为将以主函数中输入的字符串以 `\0` 为分隔符分为6个4字节长度整形值，并存放在调用该函数时的 `%rsp` 寄存器存放的地址处。当以`"1 2 3 4 5 6"`作为主函数中的输入时，在从该函数返回phase_1后，输入 `x /6dw $rsp` 查看调用该函数后栈帧中的数据，可以得到以下输出：  
 ```
 0x7fffffffdf70: 1       2       3       4
 0x7fffffffdf80: 5       6
 ```
-### part2:
+### part2:  
+
 ```
 0x400f0e <phase_2+18>   je     0x400f30 <phase_2+52>
 0x400f10 <phase_2+20>   callq  0x40143a <explode_bomb>
