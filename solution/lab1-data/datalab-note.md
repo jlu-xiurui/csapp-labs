@@ -1,7 +1,7 @@
-#Data Lab  
+# Data Lab  
 ---
 本实验需要解决一系列的位运算函数，并通过给定的测试用例，考察了实验者对于整形数据和浮点数据在计算机中存储形式和位运算特点的知识。
-##BitXor
+## BitXor
 ```  
 * bitXor - x^y using only ~ and & 
 *   Example: bitXor(4, 5) = 1
@@ -15,17 +15,17 @@ int bitXor(int x, int y) {
 ```
 
 该函数需要用and运算构造异或运算，考察了摩尔定律。
-##tmin
-	 * tmin - return minimum two's complement integer 
-	 *   Legal ops: ! ~ & ^ | + << >>
-	 *   Max ops: 4
-	 *   Rating: 1
-	 */
-	int tmin(void) {
-		return 0x80000000;
-	}
+## tmin
+* tmin - return minimum two's complement integer 
+*   Legal ops: ! ~ & ^ | + << >>
+*   Max ops: 4
+*   Rating: 1
+*/
+int tmin(void) {
+	return 0x80000000;
+}
 该函数需要返回int型数据中的最小值，即 `0x80000000`。
-##isTmax
+## isTmax
 	 * isTmax - returns 1 if x is the maximum, two's complement number,
 	 *     and 0 otherwise 
 	 *   Legal ops: ! ~ & ^ | +
