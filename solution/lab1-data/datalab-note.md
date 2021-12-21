@@ -1,16 +1,18 @@
 #Data Lab  
 ---
 本实验需要解决一系列的位运算函数，并通过给定的测试用例，考察了实验者对于整形数据和浮点数据在计算机中存储形式和位运算特点的知识。
-##BitXor  
-	 * bitXor - x^y using only ~ and & 
-	 *   Example: bitXor(4, 5) = 1
-	 *   Legal ops: ~ &
-	 *   Max ops: 14
-	 *   Rating: 1
-	 */
-	int bitXor(int x, int y) {
-  		return ~(~x&~y)&(~(x&y));
-	}
+##BitXor
+```  
+* bitXor - x^y using only ~ and & 
+*   Example: bitXor(4, 5) = 1
+*   Legal ops: ~ &
+*   Max ops: 14
+*   Rating: 1
+*/
+int bitXor(int x, int y) {
+  	return ~(~x&~y)&(~(x&y));
+}
+```
 
 该函数需要用and运算构造异或运算，考察了摩尔定律。
 ##tmin
