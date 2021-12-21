@@ -91,8 +91,8 @@ int num[6];
 read_six_numbers(input,num);
 if(num[0] != 1) explode_bomb();
 for(int i=0;i<5;i++){
-	if(num[i+1] != num[i]*2)
-		explode_bomb();
+    if(num[i+1] != num[i]*2)
+        explode_bomb();
 ```
 因此，`"1 2 4 8 16 31"` 即为本问题的答案。
 ## phase_3
@@ -172,8 +172,8 @@ for(int i=0;i<5;i++){
 
 ```
 void phase_4(char* input){
-	int num[2];
-	int len = 0;
+    int num[2];
+    int len = 0;
 	_iso99_sscanf(input,&len,num); 
 	if(len != 2) explode_bomb();
 	if(num[0] > 14) explode_bomb();
