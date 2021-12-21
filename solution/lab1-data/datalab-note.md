@@ -26,48 +26,48 @@ int tmin(void) {
 }
 该函数需要返回int型数据中的最小值，即 `0x80000000`。
 ## isTmax
-	 * isTmax - returns 1 if x is the maximum, two's complement number,
-	 *     and 0 otherwise 
-	 *   Legal ops: ! ~ & ^ | +
-	 *   Max ops: 10
-	 *   Rating: 1
-	 */
-	int isTmax(int x) {
-    	int mask = 0x80000000;
-    	int syn = !!(mask & x);
-    	x = x | mask;
-    	x = ~x+syn;
-    	return  !x;
-	}
+* isTmax - returns 1 if x is the maximum, two's complement number,
+*     and 0 otherwise 
+*   Legal ops: ! ~ & ^ | +
+*   Max ops: 10
+*   Rating: 1
+*/
+int isTmax(int x) {
+    int mask = 0x80000000;
+    int syn = !!(mask & x);
+    x = x | mask;
+    x = ~x+syn;
+	return  !x;
+}
 该函数判断参数是否为int型数据的最大值，即 `0x7fffffff` 。可以对符号位和其他位分别进行判断，首先令syn等于x的符号位，并将x的符号位置为1。当x等于 `0x7fffffff` 和 `0xffffffff`时,对符号位至1的x取反会得到0值。因此，仅需进而判断原来的x的符号位是否为1即可。
-##allOddBits
-	 * allOddBits - return 1 if all odd-numbered bits in word set to 1
-	 *   where bits are numbered from 0 (least significant) to 31 (most significant)
-	 *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
-	 *   Legal ops: ! ~ & ^ | + << >>
-	 *   Max ops: 12
-	 *   Rating: 2
-	 */
-	int allOddBits(int x) {
-    	int mask = 1<<1;
-    	mask = mask | (mask<<2);
-    	mask = mask | (mask<<4);
-    	mask = mask | (mask<<8);
-    	mask = mask | (mask<<16);
-    	return !((mask&x)^mask);
-	}
+## allOddBits
+* allOddBits - return 1 if all odd-numbered bits in word set to 1
+*   where bits are numbered from 0 (least significant) to 31 (most significant)
+*   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+*   Legal ops: ! ~ & ^ | + << >>
+*   Max ops: 12
+*   Rating: 2
+*/
+int allOddBits(int x) {
+	int mask = 1<<1;
+	mask = mask | (mask<<2);
+	mask = mask | (mask<<4);
+	mask = mask | (mask<<8);
+	mask = mask | (mask<<16);
+	return !((mask&x)^mask);
+}
 本函数需要判断x是否为奇数为全为1的数，因此仅需将x和 `0xAAAAAAAA` 取异或即可。
-##negate
-	/* 
-	 * negate - return -x 
-	 *   Example: negate(1) = -1.
-	 *   Legal ops: ! ~ & ^ | + << >>
-	 *   Max ops: 5
-	 *   Rating: 2
-	 */
-	int negate(int x) {
-    	return ~x+1;
-	}
+## negate
+/* 
+* negate - return -x 
+*   Example: negate(1) = -1.
+*   Legal ops: ! ~ & ^ | + << >>
+*   Max ops: 5
+*   Rating: 2
+*/
+int negate(int x) {
+    return ~x+1;
+}
 取相反数操作，根据补码规则即可轻松写出。
 ##isAsciiDigit
 	 * isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
