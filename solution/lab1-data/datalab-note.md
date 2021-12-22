@@ -23,7 +23,7 @@ int bitXor(int x, int y) {
 *   Rating: 1
 */
 int tmin(void) {
-	return 0x80000000;
+    return 0x80000000;
 }
 ```
 该函数需要返回int型数据中的最小值，即 `0x80000000`。
@@ -36,11 +36,11 @@ int tmin(void) {
 *   Rating: 1
 */
 int isTmax(int x) {
-	int mask = 0x80000000;
-	int syn = !!(mask & x);
-	x = x | mask;
-	x = ~x+syn;
-	return  !x;
+    int mask = 0x80000000;
+    int syn = !!(mask & x);
+    x = x | mask;
+    x = ~x+syn;
+    return  !x;
 }
 ```
 该函数判断参数是否为int型数据的最大值，即 `0x7fffffff` 。可以对符号位和其他位分别进行判断，首先令syn等于x的符号位，并将x的符号位置为1。当x等于 `0x7fffffff` 和 `0xffffffff`时,对符号位至1的x取反会得到0值。因此，仅需进而判断原来的x的符号位是否为1即可。
@@ -54,12 +54,12 @@ int isTmax(int x) {
 *   Rating: 2
 */
 int allOddBits(int x) {
-	int mask = 1<<1;
-	mask = mask | (mask<<2);
-	mask = mask | (mask<<4);
-	mask = mask | (mask<<8);
-	mask = mask | (mask<<16);
-	return !((mask&x)^mask);
+    int mask = 1<<1;
+    mask = mask | (mask<<2);
+    mask = mask | (mask<<4);
+    mask = mask | (mask<<8);
+    mask = mask | (mask<<16);
+    return !((mask&x)^mask);
 }
 ```
 本函数需要判断x是否为奇数为全为1的数，因此仅需将x和 `0xAAAAAAAA` 取异或即可。
@@ -79,18 +79,18 @@ int negate(int x) {
 取相反数操作，根据补码规则即可轻松写出。
 ## isAsciiDigit
 ```
-	 * isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
-	 *   Example: isAsciiDigit(0x35) = 1.
-	 *            isAsciiDigit(0x3a) = 0.
-	 *            isAsciiDigit(0x05) = 0.
-	 *   Legal ops: ! ~ & ^ | + << >>
-	 *   Max ops: 15
-	 *   Rating: 3
-	 */
-	int isAsciiDigit(int x) {
-    		int mask1 = ~0xFF;
-    		return !((mask1&x)+((0xF0&x)^0x30)+!((12&x)^12)+!((10&x)^10));
-	}
+* isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
+*   Example: isAsciiDigit(0x35) = 1.
+*            isAsciiDigit(0x3a) = 0.
+*            isAsciiDigit(0x05) = 0.
+*   Legal ops: ! ~ & ^ | + << >>
+*   Max ops: 15
+*   Rating: 3
+*/
+int isAsciiDigit(int x) {
+    int mask1 = ~0xFF;
+    return !((mask1&x)+((0xF0&x)^0x30)+!((12&x)^12)+!((10&x)^10));
+}
 ```
 本函数需要判断x是否为大于等于0x30且小于等于0x39的数，在这里需要观察满足该条件的数的性质。
   
