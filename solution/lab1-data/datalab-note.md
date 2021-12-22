@@ -10,7 +10,7 @@
 *   Rating: 1
 */
 int bitXor(int x, int y) {
-  	return ~(~x&~y)&(~(x&y));
+	return ~(~x&~y)&(~(x&y));
 }
 ```
 
@@ -36,10 +36,10 @@ int tmin(void) {
 *   Rating: 1
 */
 int isTmax(int x) {
-    int mask = 0x80000000;
-    int syn = !!(mask & x);
-    x = x | mask;
-    x = ~x+syn;
+	int mask = 0x80000000;
+	int syn = !!(mask & x);
+	x = x | mask;
+	x = ~x+syn;
 	return  !x;
 }
 ```
