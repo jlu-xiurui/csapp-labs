@@ -45,7 +45,7 @@ PASS: Would have posted the following:
 
 在开始之前，我们需要利用 `objdump -d ctarget` 来寻找touch函数的地址，可以得到三个函数的地址分别为`touch1 : 0x4017c0` 、`touch2 : 0x4017ec`  、`touch3 : 0x4018fa`。
 
-### Phase1
+### phase1
 
 作为实验的热身阶段，我们需要输入攻击字符串以执行touch1：
 
