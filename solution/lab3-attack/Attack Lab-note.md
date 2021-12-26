@@ -178,7 +178,7 @@ c3                      /* ret */
 
 在本部分中，我们需要对保护机制比较完善的`rtarget`程序进行攻击，在此程序中应用了随机化栈空间和限制可执行代码段的保护机制，使得我们在栈帧中插入的汇编代码不能被执行。因此，我们需要利用一种叫做Return-Oriented Programming的方式进行攻击，其原理是利用程序中的原有部分的代码片段构造可用于攻击的小工具代码段（gadgets）。这种代码段的特点是其以`0xc3`即`ret`作为代码段的结尾，使得执行其后`%rsp`的值被加以8，而在此地址中，我们又可以安排下一段代码段，通过此方式即可构造我们所需的攻击代码。
 
-![image-20211226142648509](C:\Users\xiurui1517\AppData\Roaming\Typora\typora-user-images\image-20211226142648509.png)
+![image-20211226142648509](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab3-attack/figure1.png)
 
 值得注意的是，我们可以利用一段汇编代码中的一部分构造另外的汇编代码，例如：
 
