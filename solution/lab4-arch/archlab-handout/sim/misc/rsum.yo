@@ -1,0 +1,38 @@
+                            | # Execution begins at address 0
+0x000:                      |         .pos 0
+0x000: 30f40003000000000000 |         irmovq stack,%rsp
+0x00a: 804800000000000000   |         call main
+0x013: 00                   |         halt
+                            | # Sample linked list
+0x018:                      |         .align 8
+0x018:                      | ele1:
+0x018: 0a00000000000000     |         .quad 0x00a
+0x020: 2800000000000000     |         .quad ele2
+0x028:                      | ele2:
+0x028: b000000000000000     |         .quad 0x0b0
+0x030: 3800000000000000     |         .quad ele3
+0x038:                      | ele3:
+0x038: 000c000000000000     |         .quad 0xc00
+0x040: 0000000000000000     |         .quad 0
+0x048:                      | main:
+0x048: 30f71800000000000000 |         irmovq ele1,%rdi
+0x052: 805c00000000000000   |         call rsum_list
+0x05b: 90                   |         ret
+                            | # long rsum_lis(list_ptr ls)
+                            | # ls in %rdi
+0x05c:                      | rsum_list:
+0x05c: 6277                 |         andq %rdi,%rdi
+0x05e: 746a00000000000000   |         jne  test
+0x067: 6300                 |         xorq %rax,%rax
+0x069: 90                   |         ret
+0x06a:                      | test:
+0x06a: 50270000000000000000 |         mrmovq (%rdi),%rdx
+0x074: a02f                 |         pushq %rdx
+0x076: 50770800000000000000 |         mrmovq 8(%rdi),%rdi
+0x080: 805c00000000000000   |         call rsum_list
+0x089: b02f                 |         popq %rdx
+0x08b: 6020                 |         addq %rdx,%rax
+0x08d: 90                   |         ret
+                            | # Stack starts here and grows to lower addresses
+0x300:                      |         .pos 0x300
+0x300:                      | stack:
