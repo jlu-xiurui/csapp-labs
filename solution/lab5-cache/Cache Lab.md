@@ -341,7 +341,7 @@ TEST_CSIM_RESULTS=27
 
 其思想正如上文所述，由于一个cache块中最多可以保存8个`int`型数据，因此在对矩阵B中相邻8个元素进行访问后，下一次访问将落在下一个cache块中。因此，我们可以趁这个机会切换到B中的下一行，这使得在保持了对B访问的局部性的前提下提升了对A访问的时间局部性。A的时间局部性表现在：对A的一列8个的元素访问后，将导致cache中存放这8个元素对应的块的信息，步长为8的较短步长访问模式将使得这8个块在被驱逐之前可以被命中。为了方便理解，在这里绘制该版本的访问模式图（循环索引`i`代表了块中的移动）：
 
-![figure1](E:\ubuntu\sharedoc\solution\lab5-cache\figure1.png)
+![figure1](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab5-cache/figure1.png)
 
 在这里，输入`./driver.py`以检验该版本的性能（`transpose_submit` 仅需调用该函数即可）：
 
@@ -499,7 +499,7 @@ S 0014d320,4 set:25,tag:1332 miss eviction
 
 可以看出，数组A中相邻四行的元素被映射到了相同的组号，其原因是相邻四行的元素的地址相差`64*4*4`可以被cache的规格整除，导致了抖动现象。对于该现象的通常解决方法是在A的末尾存放另外的几个元素，但是本实验中明显不允许此操作，因此我们只能降低访问的步长为4，在牺牲对B访问的性能下避免抖动现象。在这里，我们需要思考的是，在步长为4的基础上，我们是否可以改进访问模式来提升A或B的时间局部性，在这里我设计了如下的访问模式：
 
-![figure2](E:\ubuntu\sharedoc\solution\lab5-cache\figure2.png)
+![figure2](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab5-cache/figure2.png)
 
 在这里，将以上版本中规格为`1*8`的 “元素片” 改变为规格为`8*8`的 “元素块”，在块中以步长为4的访问模式分三阶段进行访问。可以看出，相邻两个阶段之间在步长为4的前提下彼此相邻，因此在保证了不发生抖动的条件下，使得一个 “元素块” 中的访问过程中具有比单纯步长为4的 “元素片” 的访问模式有更好的时间局部性。该版本的代码如下：
 
