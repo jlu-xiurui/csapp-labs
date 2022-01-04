@@ -13,3 +13,5 @@ _labs中存放了实验的原始数据，solution中存放了实验的解答和�
 * 利用书中所构造的Y86-64指令集编写汇编语言，以实现等效的三个C语言函数；
 * 在书中SEQ（Y86-84处理器的顺序实现）上增加一条额外的指令；
 * 优化书中的PIPE（Y86-84处理器的流水线实现）及用其来执行的汇编程序，使得执行该汇编程序的CPI（每指令周期数）最小。
+### 05 Cache Lab [cacheLab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab5-cache/Cache%20Lab.md)
+本实验由两部分组成，第一个部分要求我们编写一个基于LRU替换策略的cache模拟器，以模拟在经历一系列内存读取/存储任务时的cache命中、不命中及替换行为；第二个部分要求我们对矩阵转置传递函数进行优化，优化目标为尽可能低的cache不命中率。
