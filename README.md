@@ -15,3 +15,5 @@ _labs中存放了实验的原始数据，solution中存放了实验的解答和�
 * 优化书中的PIPE（Y86-84处理器的流水线实现）及用其来执行的汇编程序，使得执行该汇编程序的CPI（每指令周期数）最小。
 ### 05 Cache Lab [cacheLab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab5-cache/Cache%20Lab.md)
 本实验由两部分组成，第一个部分要求我们编写一个基于LRU替换策略的cache模拟器，以模拟在经历一系列内存读取/存储任务时的cache命中、不命中及替换行为；第二个部分要求我们对矩阵转置传递函数进行优化，优化目标为尽可能低的cache不命中率。
+### 06 Shell Lab [shellLab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab6-shell/Shell%20Lab.md)
+本实验需要实现一个简易版本的Unix Shell，该Shell需要具有作业控制、僵死子进程回收、内置命令等基本功能，为了完成本实验，实验者需要对于进程行为、信号处理具有一定的了解。当实验中遇到困难时，可以通过阅读CSAPP第8章（或APUE）得到相应的解决方案。
