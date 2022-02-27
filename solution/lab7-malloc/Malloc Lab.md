@@ -8,7 +8,7 @@
 
 1. **内存块的管理方式**：在本实验中利用了分离显示空闲链表的方式管理空闲内存块，将各大小范围的空闲块存放在各自的空闲链表之中，在本实验中设置了9个空闲链表，其大小范围分别为：16-31，32-63，64-127，128-255，256-511，512-1023，1024-2047，2048-4095，4096-无穷大。内存块的格式如下所示：
 
-![figure1](E:\ubuntu\sharedoc\_labs\08 malloc lab\figure1.png)
+![figure1](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/figure1.png)
 
 值得注意的是，用于存放前继和后继结点地址的指针被存放在块指针bp后，即工作负载之中。当块未被分配时，该处地址用于存放结点在空闲链表中的前后结点信息；当块被分配时，块从空间链表中被删除，其前后结点信息也就不用被保存了，该处地址直接被用做工作负载。
 
@@ -69,7 +69,7 @@
 
 初始化内存分配器时，在堆中分配N（空闲链表数量）个32位地址指针，作为各空闲链表的哨兵结点。在这里比较巧妙的地方在于，后继结点指针next与块指针bp地址相同，因此各哨兵结点处存放的指针即为哨兵结点的后继结点地址，即可以直接对哨兵结点指针调用`GET_NEXT(list_ptr)`来获取其后继结点地址，这使得空闲链表的插入和删除操作更加简单。
 
-![figure2](E:\ubuntu\sharedoc\_labs\08 malloc lab\figure2.png)
+![figure2](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/figure2.png)
 
 同时，为了方便空闲块合并时的边界检查，在初始化内存分配器时同时分配了序言块和结尾块，作用与书中的对应单元相同。
 
@@ -364,12 +364,12 @@
 
 当采用最佳适配法和地址顺序法时，得到的性能最佳，可以看出本实验设计的分配器在时间复杂度上已经达到了较好水平，但在空间利用率上仍有改善空间：：
 
-![figure3](E:\ubuntu\sharedoc\_labs\08 malloc lab\figure3.png)
+![figure3](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/figure3.png)
 
 首次适配法+地址顺序法
 
-![figure4](E:\ubuntu\sharedoc\_labs\08 malloc lab\figure4.png)
+![figure4](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/figure4.png)
 
 首次适配法+LIFO法
 
-![figure5](E:\ubuntu\sharedoc\_labs\08 malloc lab\figure5.png)
+![figure5](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/figure5.png)
