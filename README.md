@@ -17,7 +17,7 @@ _labs中存放了实验的原始数据，solution中存放了实验的解答和�
 本实验由两部分组成，第一个部分要求我们编写一个基于LRU替换策略的cache模拟器，以模拟在经历一系列内存读取/存储任务时的cache命中、不命中及替换行为；第二个部分要求我们对矩阵转置传递函数进行优化，优化目标为尽可能低的cache不命中率。
 ### 06 Shell Lab [shellLab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab6-shell/Shell%20Lab.md)
 本实验需要实现一个简易版本的Unix Shell，该Shell需要具有作业控制、僵死子进程回收、内置命令等基本功能，为了完成本实验，实验者需要对于进程行为、信号处理具有一定的了解。当实验中遇到困难时，可以通过阅读CSAPP第8章（或APUE）得到相应的解决方案。
-### 07 Malloc lab
+### 07 Malloc lab [malloclab_note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab7-malloc/Malloc%20Lab.md)
 本实验的目的是编写一个动态内存分配器，尽可能的在空间利用率和时间复杂度上达到最优。在实验中的一切数据结构都要存放在堆中，对实验者对于指针的管理能力有一定考验，相较以上几个实验也更加困难。
 
 注：在官网下载的源文件的测试用例tracefile不完整，可以在此实验的solution文件夹处下载完整的tracefile。
