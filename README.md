@@ -1,5 +1,5 @@
 # CSAPP-LABS  
-_labs中存放了实验的原始数据，solution中存放了实验的解答和笔记，陆续更新中。
+_labs中存放了实验的原始数据，solution中存放了实验的解答和笔记，已完结 ^ ^。
 
 ### 01 Data Lab  [datalab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab1-data/datalab-note.md) 
 本实验需要解决一系列的位运算函数，并通过给定的测试用例，考察了实验者对于整形数据和浮点数据在计算机中存储形式和位运算特点的知识。  
