@@ -364,7 +364,7 @@ totalScore: 70/70
 
 在浏览器中设置代理并访问服务器时，输出正常：
 
-![figure1](E:\ubuntu\sharedoc\_labs\09 proxy lab\figure1.png)
+![figure1](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab8-proxy/figure1.png)
 
 
 
