@@ -21,3 +21,4 @@ _labs中存放了实验的原始数据，solution中存放了实验的解答和�
 本实验的目的是编写一个动态内存分配器，尽可能的在空间利用率和时间复杂度上达到最优。在实验中的一切数据结构都要存放在堆中，对实验者对于指针的管理能力有一定考验，相较以上几个实验也更加困难。
 
 注：在官网下载的源文件的测试用例tracefile不完整，可以在此实验的solution文件夹处下载完整的tracefile。
+### 08 Proxy lab [proxylab-note](https://github.com/jlu-xiurui/csapp-labs/blob/master/solution/lab8-proxy/Proxy%20Lab.md)
