@@ -14,7 +14,7 @@
 
 ### main 主函数
 
-```
+```C
  42 buf_t poll;
  43 cache_t cache;
  44 int main(int argc,char **argv)
@@ -44,7 +44,7 @@
 
 ### serve 工作线程函数
 
-```
+```C
 177 static void serve(void *vargp){
 178     pthread_detach(pthread_self());
 179     while(1){
@@ -110,7 +110,7 @@
 
 ### 线程池相关定义及函数
 
-```
+```C
   9 typedef struct {
  10     int size;
  11     int *buf;
@@ -136,7 +136,7 @@
 
 线程池即一个“生产者-消费者”模型。其中，`size、buf、front、tail`定义了一个循环数组，以存放等待被服务的已连接套接字。`items、slots`分别表示套接字的剩余数量及循环数组的空余容量，分别被初始化为0和`size`。`mutex`作为整个模型的互斥锁，被初始化为1。
 
-```
+```C
 161 static void buf_insert(buf_t* p,int item){
 162     P(&p->slots);
 163     P(&p->mutex);
@@ -159,7 +159,7 @@
 
 ### 代理缓存及相关函数
 
-```
+```C
  18 typedef struct cache_node{
  19     int size;
  20     char* request;
@@ -195,7 +195,7 @@
 
 在并发条件下的代理缓存，本质上是一个读写者模型。在这里，利用双向链表来模拟LRU功能的缓存，当缓存中某个结点被读取或写入时，将其从链表中删除并插入至表尾；当缓存空间不足需要驱逐块时，驱逐表头的结点。在这里，用`capacity`显示的存储缓存的剩余容积。`w`作为保护链表的互斥锁、`mutex`作为保护当前读者数`readcnt`的互斥锁。
 
-```
+```C
  81 static void list_delete(cache_t* p,cache_node* ptr){
  82     p->capacity += ptr->size;
  83     if(ptr == p->head)
@@ -223,7 +223,7 @@
 
 链表的插入与删除操作，在插入和删除时更新缓存的容积。
 
-```
+```C
 104 static void cache_insert(cache_t* p,char* buf,char* request){
 105     size_t buf_size = strlen(buf);
 106     if(buf_size > MAX_OBJECT_SIZE)
@@ -265,7 +265,7 @@
 
 **125-131行**：当前缓存容积不足以存储该缓存块时，删除表头元素直至容积足够。最后，插入缓存块至表尾，并对链表解锁。
 
-```
+```C
 133 static int cache_find(cache_t* p,char* buf,char* request){
 134     P(&p->mutex);
 135     p->readcnt++;
