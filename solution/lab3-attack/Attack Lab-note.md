@@ -32,7 +32,7 @@ PASS: Would have posted the following:
 
 实现这一机制的方法在于函数`test`中：
 
-```
+```C
 1 void test()
 2 { 
 3 	int val;
@@ -49,7 +49,7 @@ PASS: Would have posted the following:
 
 作为实验的热身阶段，我们需要输入攻击字符串以执行touch1：
 
-```
+```C
 1 void touch1()
 2 { 
 3 	vlevel = 1; /* Part of validation protocol */ 
@@ -94,7 +94,7 @@ c0 17 40    /* the address of touch1 */
 
 在该部分，我们需要以特定的参数（cookie的16进制数值表示）执行`touch2`：
 
-```
+```C
 1 void touch2(unsigned val)
 2 { 
 3 	vlevel = 2; /* Part of validation protocol */ 
@@ -133,7 +133,7 @@ c3                   /* ret */
 
 在本部分中，我们需要以字符串的形式cookie作为参数执行`touch3`：
 
-```
+```C
 1 /* Compare string to hex represention of unsigned value */ 
 2 int hexmatch(unsigned val, char *sval)
 3 { 
@@ -186,7 +186,7 @@ c3                      /* ret */
 
 在这段代码中，我们可以从0x4019a2处执行该代码片段，使得其变为如下的汇编代码：
 
-```
+```assembly
 4019a2 : 48 89 c7  /* movq %rax,%rdi
 4019a5 : c3        /* retq
 ```
@@ -197,7 +197,7 @@ c3                      /* ret */
 
 首先，我们需要在这段代码区间中寻找可能有用的gadgets（为了表示简洁，在这里忽略了末尾的`ret`，但其是存在的）：
 
-```
+```assembly
 4019a2: movq %rax,%rdi
 4019ab: popq  %rax
 ```
@@ -236,7 +236,7 @@ ec 17 40 00 00 00 00 00 /* the address of touch2 */
 
 同样的，我们我们需要在这段代码区间中寻找可能有用的gadgets：
 
-```
+```assembly
 401a06 : movq %rsp,%rax
 4019a2 : movq %rax,%rdi
 4019ab : popq %rax
@@ -248,7 +248,7 @@ ec 17 40 00 00 00 00 00 /* the address of touch2 */
 
 值得注意的是，我们除了代码片段中的一部分可能有用，整个代码片段也可能是有用的（这一点困扰了我很长时间）。很关键的一段代码如下：
 
-```
+```assembly
 4019d6 : leaq(%rdi,%rsi,1),%rax
 ```
 
