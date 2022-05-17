@@ -14,7 +14,7 @@
 
 ### sum_list
 
-```
+```C
 1 /* sum_list - Sum the elements of a linked list */ 8 long sum_list(list_ptr ls)
 2 {
 3 	 long val = 0;
@@ -28,7 +28,7 @@
 
 该函数的功能是对链表元素的值进行求和，需要编写一个循环汇编语句：
 
-```
+```assembly
   1 # Execution begins at address 0
   2         .pos 0
   3         irmovq stack,%rsp
@@ -80,7 +80,7 @@
 
 链表求和函数的递归版本，其C语言如下：
 
-```
+```C
  1 long rsum_list(list_ptr ls)
  2 {
  3 	 if (!ls)
@@ -95,7 +95,7 @@
 
 对应的汇编语句如下（在这里删去了与sum_list重复初始化、定义链表部分）：
 
-```
+```assembly
   1 main:   
   2         irmovq ele1,%rdi
   3         call rsum_list
@@ -126,7 +126,7 @@
 
 该函数的功能是将数组 `src` 处存放的 `len`个元素复制到 `dest`，并返回 `src` 中各元素相互异或的值。
 
-```
+```C
  1 /* copy_block - Copy src to dest and return xor checksum of src */
  2 long copy_block(long *src, long *dest, long len)
  3 {
@@ -143,7 +143,7 @@
 
 其对应的汇编语句如下（同样删去了与sum_list相同的初始化和定义栈地址部分），是一个与sum_list类似的循环汇编语句，在这里省略对其的描述：
 
-```
+```assembly
   1 # Source block
   2         .align 8
   3 src:    
@@ -242,7 +242,7 @@ pc update | pc           <-- valP       |
 
 在分析完该指令各阶段的任务后，仅需在 `sim\seq\seq-full.hcl` 中增加 `iaddq` 相关的部分即可，应当添加的部分如下：
 
-```
+```C
 107 bool instr_valid = icode in
 108     { INOP, IHALT, IRRMOVQ, IIRMOVQ, IRMMOVQ, IMRMOVQ,
 109            IOPQ, IJXX, ICALL, IRET, IPUSHQ, IPOPQ, IIADDQ}; ## insert IIADDQ
@@ -252,7 +252,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 112 bool need_regids =
 113     icode in { IRRMOVQ, IOPQ, IPUSHQ, IPOPQ,
 114              IIRMOVQ, IRMMOVQ, IMRMOVQ, IIADDQ }; ## insert IIADDQ
@@ -262,7 +262,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 117 bool need_valC =
 118     icode in { IIRMOVQ, IRMMOVQ, IMRMOVQ, IJXX, ICALL,IIADDQ }; ## insert IIADDQ
 ```
@@ -271,7 +271,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 130 word srcB = [
 131     icode in { IOPQ, IRMMOVQ, IMRMOVQ, IIADDQ  } : rB; ## insert IIADDQ
 132     icode in { IPUSHQ, IPOPQ, ICALL, IRET } : RRSP;
@@ -283,7 +283,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 137 word dstE = [
 138     icode in { IRRMOVQ } && Cnd : rB;
 139     icode in { IIRMOVQ, IOPQ, IIADDQ} : rB; ## insert IIADDQ
@@ -296,7 +296,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 153 word aluA = [
 154     icode in { IRRMOVQ, IOPQ } : valA;
 155     icode in { IIRMOVQ, IRMMOVQ, IMRMOVQ,IIADDQ } : valC; ## insert IIADDQ
@@ -308,7 +308,7 @@ pc update | pc           <-- valP       |
 
 ---
 
-```
+```C
 162 word aluB = [
 163     icode in { IRMMOVQ, IMRMOVQ, IOPQ, ICALL,
 164               IPUSHQ, IRET, IPOPQ, IIADDQ } : valB; ## insert IIADDQ
@@ -319,7 +319,7 @@ pc update | pc           <-- valP       |
 
 ----
 
-```
+```C
 176 bool set_cc = icode in { IOPQ,IIADDQ }; ## insert IIADDQ
 ```
 
@@ -350,7 +350,7 @@ Simulating with ../seq/ssim
 
 其中 `ncopy.ys` 的功能是将一个数组中的元素复制到另一个数组中，并返回数组中的正数数量，其C语言形式：
 
-```
+```C
 1 /* 
 2 * ncopy - copy src to dst, returning number of positive ints
 3 * contained in src array.
@@ -403,7 +403,7 @@ Simulating with ../seq/ssim
 
 首先，我们来观察最初版本的 `ncopy.ys` ：
 
-```
+```assembly
   1     xorq %rax,%rax      # count = 0;
   2     andq %rdx,%rdx      # len <= 0?
   3     jle Done        # if so, goto Done:
@@ -427,7 +427,7 @@ Simulating with ../seq/ssim
 
 可以看出该实现中没有使用 `iaddq` 指令，这导致了额外的寄存器被使用，以及额外的指令数目，在这里将其改为使用 `iaddq` 的实现：
 
-```
+```assembly
  1     xorq %rax,%rax      # count = 0;
  2     andq %rdx,%rdx      # len <= 0?
  3     jle Done        # if so, goto Done:
@@ -456,7 +456,7 @@ Score	0.0/60.0
 
 可以看出CPE有了一定的改善，但效果不大，得分仍是0分。我们再次对 `ncopy.ys` 进行改进，这次我们利用4×1循环展开的方法对其进行加速：
 
-```
+```assembly
   1 ncopy:
   2         xorq %rax,%rax        # count1 = 0;
   3         iaddq $-3,%rdx        # limit = len -1 <= 0?
@@ -517,7 +517,7 @@ Score	23.9/60.0
 
 可以看出循环展开的方法有效的提升了程序的性能，终于得到了大于零的分数。在这里，我们已经对 `ncopy.ps`进行了充分的改进，我们需要思考如何对指令集实现 `pipe-full.hcl` 进行进一步的改进。通过阅读CSAPP可以得到，对于指令集实现CPI性能的改进，首先应该考虑对于分支预测的逻辑判断进行改进，在这里我们观察原版本的分支预测逻辑：
 
-```
+```assembly
 180 # Predict next value of PC
 181 word f_predPC = [
 182     f_icode in { IJXX, ICALL } : f_valC;
@@ -527,7 +527,7 @@ Score	23.9/60.0
 
 可以看出，原版本的预测逻辑是：对于跳转指令，总是选择跳转。这一逻辑对于循环语句来说是合理的，但是对于`if` 语句，尤其是汇编代码最开始判断数组元素个数是否大于零的时候，该跳转总是会得到错误的结果。因此我们将预测逻辑改为：对于循环指令跳转地址小于下一条指令地址，进行跳转，对于条件判断指令（一般是跳转地址大于下一条指令地址的），不进行跳转。逻辑语句如下：
 
-```
+```assembly
 181 word f_predPC = [
 182     f_icode in { IJXX, ICALL } && (f_valC >= f_valP) : f_valC;
 183     1 : f_valP;
