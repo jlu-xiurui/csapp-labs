@@ -11,7 +11,7 @@ Bomb Lab
 * `<ctrl+l>`：当运行一些命令之后gdb窗口会花屏，调用该命令即可进行清屏操作。
 * `set args <lists>`：设置主函数的参数，可以创建txt文件保存已完成的部分，并将其作为函数参数。
 ## phase_1  
-```
+```assembly
 0x400ee0 <phase_1>      sub    $0x8,%rsp                                
 0x400ee4 <phase_1+4>    mov    $0x402400,%esi                            
 0x400ee9 <phase_1+9>    callq  0x401338 <strings_not_equal>              
@@ -22,21 +22,21 @@ Bomb Lab
 0x400efb <phase_1+27>   retq   
 ```
 第一个炸弹函数比较简单，其功能是将地址0x402400处存放的字符串与输入字符串进行比较，如果不相同就会触发 `explode_bomb` 炸弹函数。通过 `x /1s 0x402400` 可以得到所应输入的字符串，如下所示：  
-```
+```assembly
 0x402400:   "Border relations with Canada have never been better."
 ```
 ## phase_2
 相比第一个函数，第二个函数的汇编代码长度增加了一些，在这里将其拆分为几个部分进行介绍，在下文也将继承这种格式：
 ### Part1:  
 
-```
+```assembly
 0x400efe <phase_2+2>    sub    $0x28,%rsp
 0x400f02 <phase_2+6>    mov    %rsp,%rsi 
 0x400f05 <phase_2+9>    callq  0x40145c <read_six_numbers>  
 ```
 该部分主要的工作就是调用 `<read_six_numbers>` 在栈帧中输入数据，其中`<read_six_number>`的代码如下：  
 
-```
+```assembly
 0x40145c <read_six_numbers>     sub    $0x18,%rsp
 0x401460 <read_six_numbers+4>   mov    %rsi,%rdx                                                                        
 0x401463 <read_six_numbers+7>   lea    0x4(%rsi),%rcx                                                                                 
@@ -56,12 +56,12 @@ Bomb Lab
 
 函数的功能为将以主函数中输入的字符串以 `\0` 为分隔符分为6个4字节长度整形值，并存放在调用该函数时的 `%rsp` 寄存器存放的地址处。当以`"1 2 3 4 5 6"`作为主函数中的输入时，在从该函数返回phase_1后，输入 `x /6dw $rsp` 查看调用该函数后栈帧中的数据，可以得到以下输出：  
 
-```
+```assembly
 0x7fffffffdf70: 1       2       3       4
 0x7fffffffdf80: 5       6
 ```
 ### part2:  
-```
+```assembly
 0x400f0e <phase_2+18>   je     0x400f30 <phase_2+52>
 0x400f10 <phase_2+20>   callq  0x40143a <explode_bomb>
 0x400f15 <phase_2+25>   jmp    0x400f30 <phase_2+52>                                                                                                                                                 
@@ -86,7 +86,7 @@ Bomb Lab
 
 如果其中一个判断为假则触发 `explode_bomb` ，可以将上述语句转换为类似的C语句来帮助理解（这一方法对于下面的困难问题的解决会有一定的帮助）：
 
-```
+```C
 int num[6];
 read_six_numbers(input,num);
 if(num[0] != 1) explode_bomb();
@@ -97,7 +97,7 @@ for(int i=0;i<5;i++){
 因此，`"1 2 4 8 16 31"` 即为本问题的答案。
 ## phase_3
 ### part1:  
-```
+```assembly
 0x400f47 <phase_3+4>    lea    0xc(%rsp),%rcx                                                                                                                                                        
 0x400f4c <phase_3+9>    lea    0x8(%rsp),%rdx                                                                                                                                                         
 0x400f51 <phase_3+14>   mov    $0x4025cf,%esi                                                                                                                                                         
@@ -112,7 +112,7 @@ for(int i=0;i<5;i++){
 ```
 通过阅读该部分，可以看出 `phase_3` 读入了两个四字节数数存放在 `$rsp+8` 和 `$rsp+12` 处，并且如果 `$rsp+8` 处的数大于7则会引爆炸弹。
 ### part2:
-```
+```assembly
 0x400f71 <phase_3+46>   mov    0x8(%rsp),%eax                                                                                                                                                         
 0x400f75 <phase_3+50>   jmpq   *0x402470(,%rax,8)                                                                                                                                                     
 0x400f7c <phase_3+57>   mov    $0xcf,%eax                                                                                                                                                             
@@ -138,7 +138,7 @@ for(int i=0;i<5;i++){
 0x400fc4 <phase_3+129>  callq  0x40143a <explode_bomb> 
 ```
 很明显这是一个 `switch` 语句的基本格式，且 `$rsp+8` 中的值为输入至 `switch` 中的参数，`switch` 语句为局部变量赋值并与 `$rsp+12` 处的值比较，如相同则通过函数。通过 `x /8xg 0x402470` 查看跳转表的跳转地址：  
-```
+```assembly
 0x402470:       0x0000000000400f7c      0x0000000000400fb9
 0x402480:       0x0000000000400f83      0x0000000000400f8a
 0x402490:       0x0000000000400f91      0x0000000000400f98
@@ -146,7 +146,7 @@ for(int i=0;i<5;i++){
 ```
 该问题答案不唯一，任意一组跳转地址偏移量与对应的值组成的组合均可作为答案，例如：`"1 311"`。
 ## phase_4
-```
+```assembly
 0x401010 <phase_4+4>    lea    0xc(%rsp),%rcx                                                                                                                                                         
 0x401015 <phase_4+9>    lea    0x8(%rsp),%rdx                                                                                                                                                         
 0x40101a <phase_4+14>   mov    $0x4025cf,%esi                                                                                                                                                         
@@ -170,7 +170,7 @@ for(int i=0;i<5;i++){
 
 该函数的主体部分比较简单，先是读入两个数，将其中的一个数传入 `func4` ，另一个判断其是否等于零，可以转换为下列等价C语句：  
 
-```
+```assembly
 void phase_4(char* input){
     int num[2];
     int len = 0;
@@ -183,7 +183,7 @@ void phase_4(char* input){
 ```  
 本问题的关键之处就是在于 `func4` 函数的解读，它是一个递归函数，代码如下：  
 
-```
+```assembly
 0x400fd2 <func4+4>      mov    %edx,%eax                                                                                                                                                              
 0x400fd4 <func4+6>      sub    %esi,%eax                                                                                                                                                              
 0x400fd6 <func4+8>      mov    %eax,%ecx                                                                                                                                                              
@@ -206,7 +206,7 @@ void phase_4(char* input){
 ```
 对递归函数的汇编代码进行阅读比较困难，在这里将其转化为等价的C语句以方便理解：  
 
-```	
+```C	
 int func4(int x,int y,int z){
     int ret = x - y;
     ret = ret + (ret>>31);
@@ -227,7 +227,7 @@ int func4(int x,int y,int z){
 ## phase_5
 本问题中存在两部分比较特殊的部分，其功能是检查函数调用过程中是否发生了栈帧破坏，对于函数的主体功能影响不大：  
 
-```
+```assembly
 0x40106a <phase_5+8>    mov    %fs:0x28,%rax                                                                                                                                                          
 0x401073 <phase_5+17>   mov    %rax,0x18(%rsp)
 ...
@@ -237,7 +237,7 @@ int func4(int x,int y,int z){
 0x4010e9 <phase_5+135>  callq  0x400b30 <__stack_chk_fail@plt>
 ```
 ### part1:  
-```
+```assembly
 0x401067 <phase_5+5>    mov    %rdi,%rbx 
 0x401078 <phase_5+22>   xor    %eax,%eax                                                                                                                                                             
 0x40107a <phase_5+24>   callq  0x40131b <string_length>                                                                                                                                               
@@ -248,7 +248,7 @@ int func4(int x,int y,int z){
 ```
 该函数的第一个部分是对其输入进行检查，可以看出本函数的输入应当是长度为6的字符串。如果检查通过，则进入下面的循环部分。
 ### part2:
-```
+```assembly
 0x4010d2 <phase_5+112>  mov    $0x0,%eax                                                                                                                                                              
 0x4010d7 <phase_5+117>  jmp    0x40108b <phase_5+41>  
 0x40108b <phase_5+41>   movzbl (%rbx,%rax,1),%ecx                                                                                                                                                     
@@ -264,11 +264,11 @@ int func4(int x,int y,int z){
 为了方便阅读，在这里对语句的顺序进行了调整，可以看出这是一个循环语句，在循环中将 `input` 指向的字符串拷贝至 `$rsp` 处，并将字符串中各字符与 `0xf` 做and运算，将运算结果作为地址偏移量，并将 `0x4024b0` 加该偏移量处的字符逐个拷贝至 `$rsp+16` 处。  
 利用 `x /1s 0x4024b0` 可以查看存放在该地址处的字符串：  
 
-```
+```assembly
 0x4024b0 <array.3449>:  "maduiersnfotvbylSo you think you can stop the bomb with ctrl-c, do you?"
 ```
 ### part3
-```
+```assembly
 0x4010ae <phase_5+76>   movb   $0x0,0x16(%rsp)                                                                                                                                                        
 0x4010b3 <phase_5+81>   mov    $0x40245e,%esi                                                                                                                                                         
 0x4010b8 <phase_5+86>   lea    0x10(%rsp),%rdi                                                                                                                                                        
@@ -287,7 +287,7 @@ int func4(int x,int y,int z){
 ## phase_6
 该问题的汇编代码很长，但是我们只需要将其拆分成几个独立的部分，逐个观察其对输入字符串性质的限制即可破解本题。
 ### part1:
-```
+```assembly
 0x401100 <phase_6+12>   mov    %rsp,%r13                                                                                                                                                              
 0x401103 <phase_6+15>   mov    %rsp,%rsi  
 0x401106 <phase_6+18>   callq  0x40145c <read_six_numbers>                                                                                                                                            
@@ -316,7 +316,7 @@ int func4(int x,int y,int z){
 0x401153 <phase_6+95>   lea    0x18(%rsp),%rsi
 ```
 函数的第一部分是一个双循环语句，虽然代码的字段比较长，但其性质比较简单，即输入六个数，当其存在重复元素或元素大于5时触发炸弹函数，可以转换为等价的C语句：  
-```
+```assembly
 int num[6];
 read_six_numbers(input,num);
 for(int i=0;i<6;++i){
@@ -329,7 +329,7 @@ for(int i=0;i<6;++i){
 }
 ```
 ### part2:
-```
+```assembly
 0x401153 <phase_6+95>   lea    0x18(%rsp),%rsi                                                                                                                                                        
 0x401158 <phase_6+100>  mov    %r14,%rax                                                                                                                                                              
 0x40115b <phase_6+103>  mov    $0x7,%ecx                                                                                                                                                              
@@ -341,12 +341,12 @@ for(int i=0;i<6;++i){
 0x40116d <phase_6+121>  jne    0x401160 <phase_6+108>
 ```
 该部分的功能是将之前输入的6个数对7取补，可以转换为以下的C语句：  
-```
+```C
 for(int i=0;i<6;i++)
 	num[i] = 7 - num[i];
 ```
 ### part3:
-```
+```assembly
 0x40116f <phase_6+123>  mov    $0x0,%esi                                                                                                                                                              
 0x401174 <phase_6+128>  jmp    0x401197 <phase_6+163>                                                                                                                                                 
 0x401176 <phase_6+130>  mov    0x8(%rdx),%rdx                                                                                                                                                         
@@ -367,7 +367,7 @@ for(int i=0;i<6;i++)
 0x4011a9 <phase_6+181>  jmp    0x401176 <phase_6+130>                                                                                                                     
 ```
 该部分的性质比较复杂，首先我们利用 `x /12xg 0x6032d0` 观察语句中出现的常量地址中的内容： 
-```
+```assembly
 0x6032d0 <node1>:       0x000000010000014c      0x00000000006032e0
 0x6032e0 <node2>:       0x00000002000000a8      0x00000000006032f0
 0x6032f0 <node3>:       0x000000030000039c      0x0000000000603300
@@ -376,7 +376,7 @@ for(int i=0;i<6;i++)
 0x603320 <node6>:       0x00000006000001bb      0x0000000000000000
 ```
 可以看出在0x6032d0 - 0x603310的相邻16的六个地址（设其为addr）中，具有 `*(addr+8) == addr+16` 的性质。根据此性质即可理解 `<phase_6+130>`至`<phase_6+139>`的内层循环语句，其将rdx寄存器中的值加上了 `($ecx-1)*16`。据此即可将本部分转换为等价的C语句：  
-``` 
+```C
 int* addrs[6];	
 for(int i=0;i<6;i++){
     int c = num[i];
@@ -387,7 +387,7 @@ for(int i=0;i<6;i++){
 ```
 可以看出，该部分将 `$rsp` 处存放的6个整数作为偏移量，在栈帧处存放了6个指针数据。
 ### part4:
-```
+```assembly
 0x4011ab <phase_6+183>  mov    0x20(%rsp),%rbx                                                                                                                                                        
 0x4011b0 <phase_6+188>  lea    0x28(%rsp),%rax                                                                                                                                                        
 0x4011b5 <phase_6+193>  lea    0x50(%rsp),%rsi                                                                                                                                                        
@@ -402,12 +402,12 @@ for(int i=0;i<6;i++){
 0x4011d2 <phase_6+222>  movq   $0x0,0x8(%rdx)
 ```
 该部分将上部分代码中存放的指针数组中前5个指针地址加8处存放数组中的下一个指针值，可以转化为下面的C语句方便理解：
-```  
+```C  
 for(int i=0;i<5;i++){
     *(addrs[i]+8) = addrs[i+1];
 ```
 当函数的输入参数为`"4 3 2 1 6 5"`时，在执行完该部分语句后再次输入 `x /12xg 0x6032d0` 以及查看该处存放内容的变化情况：  
-```
+```assembly
 0x6032d0 <node1>:       0x000000010000014c      0x00000000006032e0
 0x6032e0 <node2>:       0x00000002000000a8      0x00000000006032f0
 0x6032f0 <node3>:       0x000000030000039c      0x0000000000603300
@@ -416,7 +416,7 @@ for(int i=0;i<5;i++){
 0x603320 <node6>:       0x00000006000001bb      0x00000000006032d0
 ```
 输入 `x /10xg $rsp` 查看栈帧中存放的两个数组：  
-```
+```assembly
 0x7fffffffdf30: 0x0000000400000003      0x0000000600000005
 0x7fffffffdf40: 0x0000000200000001      0x0000000000000000
 0x7fffffffdf50: 0x00000000006032f0      0x0000000000603300
@@ -425,7 +425,7 @@ for(int i=0;i<5;i++){
 ```
 可以看出内存中的变化情况满足之前所作的假设。
 ### part5:
-```
+```assembly
 0x4011da <phase_6+230>  mov    $0x5,%ebp                                                                                                                                                              
 0x4011df <phase_6+235>  mov    0x8(%rbx),%rax                                                                                                                                                         
 0x4011e3 <phase_6+239>  mov    (%rax),%eax                                                                                                                                                            
@@ -437,7 +437,7 @@ for(int i=0;i<5;i++){
 0x4011f5 <phase_6+257>  jne    0x4011df <phase_6+235>
 ```
 将其转化为等价的C语句：  
-```
+```C
 for(int i=0;i<5;i++){
     if(*(addrs[i]) <= *(addrs[i]+8))
 	explode_bomb();
