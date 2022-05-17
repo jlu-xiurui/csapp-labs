@@ -14,7 +14,7 @@
 
 **2.用于地址运算的宏定义**：
 
-```
+```C
  39 #define MAX(x,y) ((x) > (y) ? (x) : (y))
  40 /* rounds up to the nearest multiple of ALIGNMENT */
  41 #define ALIGN(size) (((size) + (ALIGNMENT-1)) & ~0x7)
@@ -46,7 +46,7 @@
 
 **2.内存分配器的初始化**：
 
-```
+```C
  89 static char* heap_lists;
  90 int mm_init(void)
  91 {
@@ -77,7 +77,7 @@
 
 根据空闲块的大小，寻找相应的空闲链表的哨兵结点
 
-```
+```C
 148 static void* find_list(size_t size){
 149     char* head = heap_lists;
 150     int idx = 8,tmp = 4096;
@@ -98,7 +98,7 @@
 - 先入后出法：直接将空闲块插入至哨兵结点之后。
 - 地址顺序法：将空闲块按块地址顺序从高到低的顺序进行排列，即将空闲块插入至比其块地址低的第一个空闲块之前。
 
-```
+```C
 
 134 /*
 135  * erase the node pointed by bp from the free list
@@ -146,7 +146,7 @@
 
 查看被合并空闲块的紧邻内存块的分配状态，并将紧邻的未分配的空闲块合并成一块。当空闲块被合并时，要注意将其从空闲链表中删除。
 
-```
+```C
 107 /*
 108  * coalesce the free block
 109  */
@@ -183,7 +183,7 @@
 - 首次适配法：当寻找到第一个满足大小的空闲块时，立即返回该空闲块。
 - 最佳适配法：当寻找到满足大小的空闲块时，继续搜索该空闲链表，寻找满足大小的更小空闲块，当搜索完该空闲链表时，返回最小的且满足大小的空闲块。
 
-```
+```C
 224 /*
 225  * find the suitable blk
 226  */
@@ -228,7 +228,7 @@
 
 在找到合适大小的空闲块后，调用`place`函数对空闲块进行分配，如果剩余部分足够大，则将其插入至空闲列表中。注意需要将被放置的空闲块从空闲链表中删除。
 
-```
+```C
 205 /*
 206  * Alloc the block and insert the remaining part into the free list
 207  */
@@ -253,7 +253,7 @@
 
 - 分配空闲块：首先根据所需空间的大小，确定对应的空闲链表，并在该链表中寻找满足大小的空闲块并将其分配给用户，当对于链表中无满足大小的空闲块时，则在更大的空闲链表中寻找。当所有空闲链表中均无满足大小的空闲块时，就扩展足够大小的堆空间将其分配给用户。
 
-```
+```C
 262 /* 
 263  * mm_malloc - Allocate a block by incrementing the brk pointer.
 264  *     Always allocate a block whose size is a multiple of the alignment.
@@ -285,7 +285,7 @@
 
 - 释放空闲块：对块指针进行合并操作，并将合并得到的空闲块插入至空闲链表
 
-```
+```C
 289 /*
 290  * mm_free - Freeing a block,insert the block into the free list.
 291  */
@@ -307,7 +307,7 @@
 - 当原内存块的大小小于重分配所需大小时，尝试将其与紧邻的下一内存块进行合并，如可以合并且合并大小大于重分配所需大小时，返回合并后的空闲块。
 - 当无法合并或合并大小不足时，调用`mm_malloc`和`mm_free`函数重新分配内存块并返回用户
 
-```
+```C
 302 void *mm_realloc(void *ptr, size_t size)
 303 {
 304     //printf("realloc ptr 0x%x to size %d,oldsize is %d\n",ptr,ALIGN(size + 16),GET_SIZE(ptr));
@@ -340,7 +340,7 @@
 
 该函数可以打印出所有空闲链表，对于调试代码和检测内存泄漏有一定的帮助
 
-```
+```C
  68 /*
  69  * print every free list
  70  */
