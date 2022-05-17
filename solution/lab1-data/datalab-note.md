@@ -138,7 +138,7 @@ int isLessOrEqual(int x, int y) {
 * 当x与y异号时，仅当x为负数时x <= y成立。
 ## logicalNeg
 ```C
-* logicalNeg - implement the ! operator, using all of 
+/* logicalNeg - implement the ! operator, using all of 
 *              the legal operators except !
 *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
 *   Legal ops: ~ & ^ | + << >>
