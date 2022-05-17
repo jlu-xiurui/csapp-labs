@@ -2,7 +2,7 @@
 ---
 本实验需要解决一系列的位运算函数，并通过给定的测试用例，考察了实验者对于整形数据和浮点数据在计算机中存储形式和位运算特点的知识。
 ## BitXor
-```  
+```C
 * bitXor - x^y using only ~ and & 
 *   Example: bitXor(4, 5) = 1
 *   Legal ops: ~ &
@@ -16,7 +16,7 @@ int bitXor(int x, int y) {
 
 该函数需要用and运算构造异或运算，考察了摩尔定律。
 ## tmin
-```
+```C
 * tmin - return minimum two's complement integer 
 *   Legal ops: ! ~ & ^ | + << >>
 *   Max ops: 4
@@ -28,7 +28,7 @@ int tmin(void) {
 ```
 该函数需要返回int型数据中的最小值，即 `0x80000000`。
 ## isTmax
-```
+```C
 * isTmax - returns 1 if x is the maximum, two's complement number,
 *     and 0 otherwise 
 *   Legal ops: ! ~ & ^ | +
@@ -45,7 +45,7 @@ int isTmax(int x) {
 ```
 该函数判断参数是否为int型数据的最大值，即 `0x7fffffff` 。可以对符号位和其他位分别进行判断，首先令syn等于x的符号位，并将x的符号位置为1。当x等于 `0x7fffffff` 和 `0xffffffff`时,对符号位至1的x取反会得到0值。因此，仅需进而判断原来的x的符号位是否为1即可。
 ## allOddBits
-```
+```C
 * allOddBits - return 1 if all odd-numbered bits in word set to 1
 *   where bits are numbered from 0 (least significant) to 31 (most significant)
 *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
@@ -64,7 +64,7 @@ int allOddBits(int x) {
 ```
 本函数需要判断x是否为奇数为全为1的数，因此仅需将x和 `0xAAAAAAAA` 取异或即可。
 ## negate
-```
+```C
 /* 
 * negate - return -x 
 *   Example: negate(1) = -1.
@@ -78,7 +78,7 @@ int negate(int x) {
 ```
 取相反数操作，根据补码规则即可轻松写出。
 ## isAsciiDigit
-```
+```C
 * isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
 *   Example: isAsciiDigit(0x35) = 1.
 *            isAsciiDigit(0x3a) = 0.
@@ -101,7 +101,7 @@ int isAsciiDigit(int x) {
   
 将上述几个条件进行取或操作即可进行判断。
 ## conditional
-```
+```C
 * conditional - same as x ? y : z 
 *   Example: conditional(2,4,5) = 4
 *   Legal ops: ! ~ & ^ | + << >>
@@ -116,7 +116,7 @@ int conditional(int x, int y, int z) {
 ```
 该函数需要我们实现三元运算符。当x为0时，`!x+0xffffffff`为全1掩码，当x为非0时，其为全0掩码，据此即可构造出本问题的答案。
 ## isLessOrEqual
-```
+```C
 * isLessOrEqual - if x <= y  then return 1, else return 0 
 *   Example: isLessOrEqual(4,5) = 1.
 *   Legal ops: ! ~ & ^ | + << >>
@@ -137,7 +137,7 @@ int isLessOrEqual(int x, int y) {
 * 当x与y同号时，不需要考虑溢出问题，当**x与y相等**或者**x减去y小于0**时x <= y成立。
 * 当x与y异号时，仅当x为负数时x <= y成立。
 ## logicalNeg
-```
+```C
 * logicalNeg - implement the ! operator, using all of 
 *              the legal operators except !
 *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
@@ -151,7 +151,7 @@ int logicalNeg(int x) {
 ```
 0为所有数中唯一的本身与相反数符号位均为0的数，根据此性质可以将 x 和 -x 的符号位取或，并对符号位进行符号右移扩充，使得0的运算结果仍为0，其余数的运算结果为 `0xffffffff`，对运算结果加一即可构造出逻辑非的形式。
 ##howManyBits
-```
+```C
 /* howManyBits - return the minimum number of bits required to represent x in
 *             two's complement
 *  Examples: howManyBits(12) = 5
@@ -182,7 +182,7 @@ int howManyBits(int x) {
 ```
 这道题我一开始并没有明白题目的意思，搜索得到的答案是 **“对于负数，最少位数的二进制表示为一位符号位加上负数取反后的最高位1的位数；对于正数，最少位数的二进制表示为一位符号位加上其最高位1的位数”** 。在这里我的理解是，对于int型数据，符号位为0的最小数为0，符号位为1的最大数为-1，当非负数 x 和负数 y 满足 `x == -y-1` 时，x 和 ~y的二进制表示相同。因此，对于负数以-1为起点编码、对于正数以0为起点编码的编码方式所得到的**int类型整体2进制位数**最小。其中，对最高位1的位数的求取可以采用手动二分法得到。
 ## floatScale2
-```
+```C
 /* 
 * floatScale2 - Return bit-level equivalent of expression 2*f for
 *   floating point argument f.
@@ -224,7 +224,7 @@ unsigned floatScale2(unsigned uf) {
 * 对于非规格化数，阶码为全0，其尾数代表了小于1的二进制小数，对其进行保持符号位的左移一位即可；
 * 对于规格化数，乘以二对于尾数没有改变，仅对于阶码进行加一操作即可。
 ## floatFloat2Int
-```
+```C
 * floatFloat2Int - Return bit-level equivalent of expression (int) f
 *   for floating point argument f.
 *   Argument is passed as unsigned int, but
@@ -261,7 +261,7 @@ int floatFloat2Int(unsigned uf) {
 * 当阶码的值大于31 + 127时，uf表达的浮点数的数值大于int可以容纳的最大数值，返回 `0x80000000u` 即可；
 * 对于其余的数，其均为规格化数，因此在低23位处或1以填充隐含的1开头。当屏蔽符号位和阶码位的情况下，此时的 uf 若将其视为int类型数据，其值就等于 `(2^23)*(1+f)` 。因此，按照阶码E的实际值对 uf 进行左移或右移操作即可构造出与答案绝对值相同的int型二进制表达，接下来按照之前保存的符号位对负数进行取负操作即可得到答案。
 ## floatPower2
-```
+```C
 * floatPower2 - Return bit-level equivalent of the expression 2.0^x
 *   (2.0 raised to the power x) for any 32-bit integer x.
 *
