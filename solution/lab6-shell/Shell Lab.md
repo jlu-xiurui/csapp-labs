@@ -6,8 +6,8 @@
 
 ### `unix_error`
 
-```
-601  * unix_error - unix-style error routine
+```C
+601  /* unix_error - unix-style error routine
 602  */
 603 void unix_error(const char *msg,...)
 604 {
@@ -28,7 +28,7 @@
 
 ### `eval`
 
-```
+```C
 157 /* 
 158  * eval - Evaluate the command line that the user has just typed in
 159  * 
@@ -95,7 +95,7 @@
 
 ### `builtin_cmd`
 
-```
+```C
 265 /* 
 266  * builtin_cmd - If the user has typed a built-in command then execute
 267  *    it immediately.  
@@ -132,7 +132,7 @@
 
 ### `do_bgfg`
 
-```
+```C
 295 /* 
 296  * do_bgfg - Execute the builtin bg and fg commands
 297  */
@@ -180,7 +180,7 @@
 
 ### `waitfg`
 
-```
+```C
 335 /* 
 336  * waitfg - Block until process pid is no longer the foreground process
 337  */
@@ -206,7 +206,7 @@
 
 ### `sigchld_handler`
 
-```
+```C
 359 /* 
 360  * sigchld_handler - The kernel sends a SIGCHLD to the shell whenever
 361  *     a child job terminates (becomes a zombie), or stops because it
@@ -237,7 +237,7 @@
 
 ### `sigint_handler`
 
-```
+```C
 381 /* 
 382  * sigint_handler - The kernel sends a SIGINT to the shell whenver the
 383  *    user types ctrl-c at the keyboard.  Catch it and send it along
@@ -260,7 +260,7 @@
 
 ### `sigtstp_handler`
 
-```
+```C
 398 /*
 399  * sigtstp_handler - The kernel sends a SIGTSTP to the shell whenever
 400  *     the user types ctrl-z at the keyboard. Catch it and suspend the
