@@ -35,7 +35,7 @@ cache模拟器以如下的形式在终端被调用：
 
 对于命令行参数的读取，可以通过 `getopt` 系列函数实现。对于LRU替换策略，在这里采用双向链表的方式实现，具体实现方式见代码描述：
 
-```
+```C
   1 #include "cachelab.h"
   2 #include <getopt.h>
   3 #include <stdlib.h>
@@ -67,7 +67,7 @@ cache模拟器以如下的形式在终端被调用：
 
 **1 - 27行**：首先是头文件的导入以及一些全局变量（cache的组数、行数、块大小）和宏的定义，`err_sys` 是仿照APUE设计的异常处理函数，可以在主函数代码中以一行的长度插入。
 
-```
+```C
  28 /*
  29  * the hex's string to int
  30  */
@@ -116,7 +116,7 @@ cache模拟器以如下的形式在终端被调用：
 
 **28 - 71行**：`str2int` 是一个将字符串表示16进制数转化为 `int` 型数值的辅助函数；`cache_set` 为一个双向链表，是对cache中组的模拟形式，`cache_line` 为该双向链表中的结点，是对cache中行的模拟形式。`cache_insert` 是双向链表中的尾插函数。
 
-```
+```C
  72 /*
  73  * return 0 : hit, return 1 : miss, return 2 : miss eviction
  74  */
@@ -164,7 +164,7 @@ cache模拟器以如下的形式在终端被调用：
 
 **72 - 114行**：`cache_init` 为 `cache_set` 的构造函数。`cache_operate` 为cache行为模拟的主函数，当一次内存访存操作导致cache命中、不命中、不命中且替换时分别返回0、1、2。其输入 `set` 为 `main`函数中一次内存访存地址的组号所对应的双向链表、`address_tag` 为该内存访存地址的标记号，简称访存标记号。首先，函数寻找是否有与访存标记号相对应的cache行，如果存在相应的cache行，则代表cache命中，将该行移到双向链表的尾端并返回0代表cache命中；如果不存在，则代表cache不命中，需要将此访存记录行插入至链表尾端，当该链表的长度在插入后大于E时，删除链表头的行结点，并返回2代表cache不命中且替换；当链表长度在插入后不大于E时，返回1代表cache不命中。
 
-```
+```C
 115 int main(int argc,char *argv[])
 116 {
 117   // initialize the option arguments
@@ -210,7 +210,7 @@ cache模拟器以如下的形式在终端被调用：
 
 ​		利用 `switch` 语句对读入的命令行选项参数进行分类，当读入 `-h` 时，返回 `help.txt` 中存放的对于该命令的描述信息并退出进程；当读入 `-v`  时，代表本命令需要输出每次内存访存的信息和对应的cache行为；当读入`-s`、`-E`、`-b` 时，利用全局变量 `optarg`得到选项对应的参数并存储；当读入 `-t` ，将 `optarg` 存放的内存访存轨迹文件的路径存在 `filename` 中。 
 
-```
+```C
 154   int hits = 0,misses = 0,eviction = 0;
 155   if((fp = fopen(filename,"r")) == NULL)
 156       err_sys("open trace file fail");
@@ -223,7 +223,7 @@ cache模拟器以如下的形式在终端被调用：
 
 **154 - 161行**：创建保存cache命中、不命中、替换次数的局部变量，并打开内存访存轨迹文件的流描述符，创建大小为组数的双向链表数组以模拟整个cache，并对其进行初始化。
 
-```
+```C
 162   //simulate each cache operation
 163   while(fgets(buf,MAXLINE,fp) != NULL){
 164     if(buf[0] != ' ')
@@ -244,7 +244,7 @@ cache模拟器以如下的形式在终端被调用：
 
 **162 - 177行**：每次读入一行内存访存轨迹文件中的字符串，当字符串的首个字符为 `\0` 时，表示该次访存为指令访存，不需要对其进行模拟；接下来，从字符串中分割出访存方式、访存地址，并根据对应的组索引位数和块偏移量位数提取出访存地址中的组号和标记值，并将组号和标记值输出至标准输出（这一输出对下一部分的工作有很大帮助）。
 
-```
+```C
 178     //simulate the operation and log the info
 179     switch(cache_operate(&cache[address_set],address_tag)){
 180       case 1:
@@ -308,7 +308,7 @@ TEST_CSIM_RESULTS=27
 
 实验中给出的简单矩阵传递转置函数进行分析：
 
-```
+```C
  char trans_desc[] = "Simple row-wise scan transpose";
  void trans(int M, int N, int A[N][M], int B[M][N])
  {   
@@ -324,7 +324,7 @@ TEST_CSIM_RESULTS=27
 
 可以看出，在简单的版本中，对于A（当`i,j`切换时则为B）的内存加载具有步长为1的良好空间局部性，且对于一个块中的所有元素的访问均在时间上相邻，也具有良好的时间局部性，而对于B的内存存储则具有步长为N的较差的空间局部性，同时B（当`i,j`切换时则为A）具有较差的时间局部性，由于每一次对B的内存存储导致的cache记录都在对该记录的另一次cache命中之前被替换出cache。可以看出，为了提高该函数的性能，需要在尽可能保留A的较好性能的前提下，提高B的时间局部性和空间局部性。因此，在这里我对其进行改进，写出了第一版改进函数：
 
-```
+```C
  char trans_desc1[] = "block_size = 8"; 
  void trans1(int M, int N, int A[N][M], int B[M][N])
  {   
@@ -405,7 +405,7 @@ S 0014d228,4 set:17,tag:1332 miss eviction
 
 首先，我们可以看出，在对A矩阵的一列元素访问后的一系列cache不命中后，存入至cache的信息使得对A的下一列元素的访问cache命中。但是，我们观察到对于对角线上的元素，矩阵A和B相应位置的元素被映射到了同一个组中，因此导致了彼此的驱逐，其原因是A和B矩阵相应位置的元素的地址相差`32*32*4`个字节，正好为cache容量的整数倍，可以联想到`64*64`矩阵中也会导致该问题。在这里，我们利用局部变量存储元素的方法解决该问题，其代码如下：
 
-```
+```C
  char transpose_desc2[] = "block size = 8 and register store";
  void trans2(int M, int N, int A[N][M], int B[M][N])
  {
@@ -503,7 +503,7 @@ S 0014d320,4 set:25,tag:1332 miss eviction
 
 在这里，将以上版本中规格为`1*8`的 “元素片” 改变为规格为`8*8`的 “元素块”，在块中以步长为4的访问模式分三阶段进行访问。可以看出，相邻两个阶段之间在步长为4的前提下彼此相邻，因此在保证了不发生抖动的条件下，使得一个 “元素块” 中的访问过程中具有比单纯步长为4的 “元素片” 的访问模式有更好的时间局部性。该版本的代码如下：
 
-```
+```C
  char transpose_desc3[] = "block size = 8*8 and register store";
  void trans3(int M, int N, int A[N][M], int B[M][N])
  {
@@ -543,7 +543,7 @@ S 0014d320,4 set:25,tag:1332 miss eviction
 
 可以证明的是，只有当矩阵的其中一个规格参数为64时，才会导致如上的抖动现象，因此我们在提交版本的函数中根据规格参数调用不同的矩阵转置传递函数：
 
-```
+```C
  char transpose_submit_desc[] = "Transpose submission";
  void transpose_submit(int M, int N, int A[N][M], int B[M][N])
  {
